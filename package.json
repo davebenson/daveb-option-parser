@@ -1,0 +1,30 @@
+{
+  "name": "daveb-option-parser",
+  "description": "A not-too-simple command-line option parser",
+  "version": "0.0.0",
+  "author": "Dave Benson <daveb@ffem.org>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davebenson/daveb-option-parser.git"
+  },
+  "keywords": [
+    "command-line",
+    "option parsing"
+  ],
+  "dependencies": {},
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/davebenson/daveb-option-parser/master/LICENSE"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/davebenson/daveb-option-parser/issues"
+  },
+  "homepage": "https://github.com/davebenson/daveb-option-parser",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "node test/index.js"
+  },
+  "license": "ISC"
+}

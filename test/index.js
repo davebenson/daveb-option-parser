@@ -25,8 +25,8 @@ function test_int()
 {
   var o = new OptionParser();
   o.errorHandler = function() {};
-  o.addInt('num1', 'number 1').mandatory();
-  o.addInt('num2', 'number 2').defaultValue(42);
+  o.addInt('num1', 'number 1').setMandatory();
+  o.addInt('num2', 'number 2').setDefaultValue(42);
   o.addInt('num3', 'number 3');
   var res1 = o.parse(['node', 'test', '--num1=0']);
   assert(res1.num1 === 0);
