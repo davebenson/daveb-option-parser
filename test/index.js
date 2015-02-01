@@ -2,11 +2,13 @@
 var OptionParser = require('../lib/index').OptionParser;
 var assert = require('assert');
 
+var errorHandler_ignore = function() {};
+var errorHandler_print = function(s) {console.log('ERROR: '+s);};
 
 function test_flag()
 {
   var o = new OptionParser();
-  o.errorHandler = function() {};
+  o.errorHandler = errorHandler_ignore;
   o.addFlag('flag', 'this is a flag');
   var res1 = o.parse(['node', 'test', '--stupid']);
   assert(!res1);
@@ -24,7 +26,7 @@ function test_flag()
 function test_int()
 {
   var o = new OptionParser();
-  o.errorHandler = function() {};
+  o.errorHandler = errorHandler_ignore;
   o.addInt('num1', 'number 1').setMandatory();
   o.addInt('num2', 'number 2').setDefaultValue(42);
   o.addInt('num3', 'number 3');
