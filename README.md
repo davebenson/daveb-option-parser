@@ -60,8 +60,8 @@ console.log(sum.join(','));
 
 # Reference Documentation
 
-## `OptionParser` class
-### `new OptionParser([options])`
+## <tt>OptionParser</tt> class
+### <code>new OptionParser([options])</code>
 Create a new OptionParser.  Options is an object which may contain the following fields:
 * camelCase: store values keyed by camelCase rather than lowercase_underscore_separated
 * allowArguments: ...
