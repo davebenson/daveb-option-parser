@@ -21,6 +21,12 @@ function test_flag()
   var res4 = o.parse(['node', 'test', '--no-flag']);
   assert(res4);
   assert(!res4.flag);
+  var res5 = o.parse(['node', 'test', '--flag=true']);
+  assert(res5);
+  assert(res5.flag);
+  var res6 = o.parse(['node', 'test', '--flag=false']);
+  assert(res6);
+  assert(!res6.flag);
 }
 
 function test_int()
@@ -87,7 +93,7 @@ function test_float()
 function test_type_registration()
 {
   var o = new OptionParser();
-  o.errorHandler = errorHandler_print;
+  o.errorHandler = errorHandler_ignore;
   o.registerType('vector', function (value) {
     var rv = [];
     value.split(/,/).forEach(function(eltString) {
@@ -112,6 +118,39 @@ function test_type_registration()
   assert(res1.b[1] === 2);
   assert(res1.c === undefined);
 }
+ 
+function test_int_repeated()
+{
+  var o = new OptionParser();
+  o.errorHandler = errorHandler_ignore;
+  o.addGeneric('a', 'int', 'first vector').setMandatory().setRepeated();
+  o.addGeneric('b', 'int', 'second vector').setDefaultValue([1,2]).setRepeated();
+  o.addGeneric('c', 'int', 'third vector').setRepeated();
+
+  var res1 = o.parse(['node', 'test', '--a=1', '--a', '2']);
+  assert(res1.a.length === 2);
+  assert(res1.a[0] === 1);
+  assert(res1.a[1] === 2);
+  assert(res1.b.length === 2);
+  assert(res1.b[0] === 1);
+  assert(res1.b[1] === 2);
+  assert(res1.c.length === 0);
+
+  var res2 = o.parse(['node', 'test']);
+  assert(res2 === null);
+
+  var res3 = o.parse(['node', 'test', '--a=666', '--b=42', '--c', '7', '--c=9', '--c=11', '--c=13']);
+  assert(res3.a.length === 1);
+  assert(res3.a[0] === 666);
+  assert(res3.b.length === 1);
+  assert(res3.b[0] === 42);
+  assert(res3.c.length === 4);
+  assert(res3.c[0] === 7);
+  assert(res3.c[1] === 9);
+  assert(res3.c[2] === 11);
+  assert(res3.c[3] === 13);
+}
+
 
 var tests = [
   { name: 'test flags', f: test_flag },
@@ -119,6 +158,7 @@ var tests = [
   { name: 'test strings', f: test_string },
   { name: 'test floats', f: test_float },
   { name: 'test type registration', f: test_type_registration },
+  { name: 'test repeated ints', f: test_int_repeated },
 ];
 
 tests.forEach(function(test) {
