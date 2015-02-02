@@ -62,67 +62,73 @@ console.log(sum.join(','));
 
 ## `OptionParser` class
 ### `new OptionParser`(_[options]_)
-Create a new OptionParser.  Options is an object which may contain the following fields:
-* camelCase: store values keyed by camelCase rather than lowercase_underscore_separated
-* allowArguments: ...
-* errorHandler: function to call if something goes wrong.  if unspecified, the 
+Create a new `OptionParser`.  Options is an object which may contain the following fields:
+* `camelCase`: store values keyed by camelCase rather than lowercase_underscore_separated
+* `allowArguments`: make the option-parser argumentative.  j/k.
+Actually, this makes it so that we collect non-option command-line arguments into the parser's `arguments` member.
+* `errorHandler`: function to call if something goes wrong.  if unspecified, the 
 program will terminate with an error message.
-* name: application name, used in usage summary.
-* description: human-readable blurb that will follow the usage summary in the usage message.
+* `name`: application name, used in usage summary.
+* `description`: human-readable blurb that will follow the usage summary in the usage message.
 
-### `addInt`(name, description)
+### `addInt`(_name_, _description_)
 Add an integer parameter to the option-parser.
 
 Returns a new ArgInfo.
 
-### `addFloat`(name, description)
+### `addFloat`(_name_, _description_)
 Add an float parameter to the option-parser.
 
 Returns a new ArgInfo.
 
-### `addString`(name, description)
+### `addString`(_name_, _description_)
 Add a string parameter to the option-parser.
 
-Returns a new ArgInfo.
+Returns a new `ArgInfo`.
 
-### `registerType`(type, parseFunction)
+### `registerType`(_type_, _parseFunction_)
 Add a new type to the option-parser.
 
 Register a new type.
 
-### `addGeneric`(name, type, description)
+Returns a new `TypeInfo`.
+
+### `addGeneric`(_name_, _type_, _description_)
 Add a new parameter to the option-parser.
 
-### `addMode`(name, parser)
+### `addMode`(_name_, _parser_) (UNIMPLEMENTED)
 Add a new submode for this command.
 
 Once a mode is given, it becomes required to specify a mode.
 
-The user's chosen mode information will be returned in this.modeName
-and this.modeValues.
+The user's chosen mode information will be returned in `this.modeName`
+and `this.modeValues`.
 
-### `parse`([args])
+### `parse`(_[args]_)
 Parse the command-line arguments.  If not specified, we process the current process's arguments,
-process.argv.
+`process.argv`.
 
 The values are returned as an object, unless an non-fatal non-throwing error-handler was installed
 and parsing failed, in which case, null is returned. 
 
 After running the option parser has a few members set that can be used:
-* values: this is the same as the return value of the parse.
-* arguments: all non-option arguments are collected here.
+* `values`: this is the same as the return value of the parse.
+* `arguments`: all non-option arguments are collected here.
 
-### `getUsage`([options])
+### `getUsage`(_[options]_)
 Return a printable string describing the usage of this program.
 
-Options:
-* width: specify screen width for word-wrapping.
+If specified, `options` should be an object with the following optional fields:
+* `width`: specify screen width for word-wrapping.
 
 ## `ArgInfo` class
 Represent metadata about an argument to the program (not the actual value).
-This is created by the various add...() functions in the OptionParser class.
+This is created by the various `add...()` functions in the OptionParser class.
 Its methods are "chainable" (they return "this"),
-so it is common to write parser.addInt(...).setMandatory(), etc.
+so it is common to write create and configuring the argument in one statement, for example:
+```javascript
+parser.addInt('some-int', 'an integer').setMandatory().setMinimum(10);
+```
 
 ### `setDefaultValue`(value)
 Populate the returned option values with this value if not given.
@@ -137,26 +143,36 @@ for this option will be an array of the types.  Similarly, setDefaultValue() wil
 given an array (the default default value in this case is the empty array, []).
 If this option is tagged 'mandatory', then at least one instance must be given.
 
-### setLabel(labelText)
+### `setLabel`(_labelText)
 
-### setMinimum(minimumValue)
+### `setMinimum`(_minimumValue_)
 Value must be greater than or equal to minimumValue.
-### setStrictMinimum(minimumValue)
+### `setStrictMinimum`(_minimumValue_)
 Value must be strictly greater than minimumValue.
-### setMaximum(maximumValue)
+### `setMaximum`(_maximumValue_)
 Value must be less than or equal to maximumValue.
-### setStrictMaximum(maximumValue)
+### `setStrictMaximum`(_maximumValue_)
 Value must be strictly less than maximumValue.
 
-### setInterval(minimumValue, strictMaximumValue)
+### `setInterval`(_minimumValue_, _strictMaximumValue_)
 Value must be within halfopen interval: this is equivalent
 to setMinimum(minimumValue).setStrictMaximum(strictMaximumValue).
 
-## TypeInfo class
+### `setHidden`(_isHidden_)
+A hidden option is not documented in the usage message.
+It is intended (1) to support deprecated options, (2) to provide a way
+for a suite of programs to have private interfaces to facilitate working together,
+(3) providing easter eggs.
+
+It should be seldom-used, and it is a sure sign that someone is trying
+to do something sneaky!
+
+## `TypeInfo` class
 An instance of the TypeInfo class is created when a new type is created via registerType.
 
-### setDefaultLabel(labelText)
+### `setDefaultLabel`(_labelText_)
 
+# Details of the Usage Message Generation
 
 # AUTHOR
 Dave Benson
