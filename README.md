@@ -60,8 +60,8 @@ console.log(sum.join(','));
 
 # Reference Documentation
 
-## <tt>OptionParser</tt> class
-### <code>new OptionParser([options])</code>
+## `OptionParser` class
+### `new OptionParser`(_[options]_)
 Create a new OptionParser.  Options is an object which may contain the following fields:
 * camelCase: store values keyed by camelCase rather than lowercase_underscore_separated
 * allowArguments: ...
@@ -156,25 +156,6 @@ to setMinimum(minimumValue).setStrictMaximum(strictMaximumValue).
 An instance of the TypeInfo class is created when a new type is created via registerType.
 
 ### setDefaultLabel(labelText)
-
-# TODO
-* modes - like git, apt-get, etc support - a family of programs in one executable.
-  * designed
-  * TODO:
-    * implement addMode()
-    * implement getUsage()
-    * implement parse()
-    * example
-* short options - single character abbreviations.  multiple characters may
-be combined, except only one may take an argument.
-* feature: hidden options ?
-* feature: wrapper program support
-* bug: verify non-repeated arguments are really not repeated
-* cleanup: move all default handling to end.
-* mutually exclusive options: ie exactly 1 of these N options must be given;
-or 0 or 1 of these N options must be given.
-* tests
-  * permitArguments
 
 
 # AUTHOR
