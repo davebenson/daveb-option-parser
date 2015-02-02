@@ -1,5 +1,5 @@
 
-var OptionParser = require('../lib/index').OptionParser;
+var OptionParser = require('../lib/daveb-option-parser').OptionParser;
 
 // configure options for a very simple counting program.
 var optionParser = new OptionParser({

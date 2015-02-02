@@ -22,7 +22,7 @@
     "url": "https://github.com/davebenson/daveb-option-parser/issues"
   },
   "homepage": "https://github.com/davebenson/daveb-option-parser",
-  "main": "lib/index.js",
+  "main": "lib/daveb-option-parser.js",
   "scripts": {
     "test": "node test/index.js"
   },

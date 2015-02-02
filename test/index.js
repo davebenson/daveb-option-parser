@@ -1,5 +1,5 @@
 
-var OptionParser = require('../lib/index').OptionParser;
+var OptionParser = require('../lib/daveb-option-parser').OptionParser;
 var assert = require('assert');
 
 var errorHandler_ignore = function() {};
@@ -151,6 +151,39 @@ function test_int_repeated()
   assert(res3.c[3] === 13);
 }
 
+function test_modes()
+{
+  var o_rectangle = new OptionParser();
+  o_rectangle.errorHandler = errorHandler_ignore;
+  o_rectangle.addFloat('width', 'width of rectangle').setMandatory();
+  o_rectangle.addFloat('height', 'height of rectangle').setMandatory();
+
+  var o_circle = new OptionParser();
+  o_circle.errorHandler = errorHandler_ignore;
+  o_circle.addFloat('radius', 'radius of circle').setMandatory();
+
+  var o = new OptionParser();
+  o.errorHandler = errorHandler_ignore;
+  o.addMode('rectangle', o_rectangle);
+  o.addMode('circle', o_circle);
+  var res1 = o.parse(['node', 'test', 'circle', '--radius=5']);
+  assert(res1.mode === 'circle');
+  assert(res1.modeValues.radius === 5);
+
+  var res2 = o.parse(['node', 'test', '--radius=5']);
+  assert(res2 === null);
+
+  var res3 = o.parse(['node', 'test']);
+  assert(res3 === null);
+
+  var res4 = o.parse(['node', 'test', 'circle', '--radiusx=5']);
+  assert(res4 === null);
+
+  var res5 = o.parse(['node', 'test', 'rectangle', '--width=42', '--height=24']);
+  assert(res5.mode === 'rectangle');
+  assert(res5.modeValues.width === 42);
+  assert(res5.modeValues.height === 24);
+}
 
 var tests = [
   { name: 'test flags', f: test_flag },
@@ -159,6 +192,7 @@ var tests = [
   { name: 'test floats', f: test_float },
   { name: 'test type registration', f: test_type_registration },
   { name: 'test repeated ints', f: test_int_repeated },
+  { name: 'test modes', f: test_modes },
 ];
 
 tests.forEach(function(test) {

@@ -1,4 +1,4 @@
-var OptionParser = require('../lib/index').OptionParser;
+var OptionParser = require('../lib/daveb-option-parser').OptionParser;
 
 var optionParser = new OptionParser({
   description: 'Add two 3-d vectors'
