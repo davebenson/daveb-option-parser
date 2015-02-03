@@ -133,7 +133,14 @@ Returns a new `TypeInfo`.
 ### `addGeneric`(_name_, _type_, _description_)
 Add a new parameter to the option-parser.
 
-### `addMode`(_name_, _parser_) (UNIMPLEMENTED)
+### `addShortAlias`(_shortname_, _longname_) [TODO]
+Alias a one-character name for a long name.
+
+### `addPreset`(_name_, _description_, _optionDictionary_) [TODO]
+When this long-option is encountered, all the various attributes
+in optionDictionary will be copied into the returned values dictionary.
+
+### `addMode`(_name_, _parser_)
 Add a new submode for this command.
 
 Once a mode is given, it becomes required to specify a mode.
