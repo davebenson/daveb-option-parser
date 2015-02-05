@@ -59,6 +59,7 @@ console.log(sum.join(','));
 ```
 
 # Example: Command with Different Modes
+```javascript
 var OptionParser = require('daveb-option-parser').OptionParser;
 
 var optionParser = new OptionParser({
@@ -93,7 +94,7 @@ switch (options.mode) {
     break;
   }
 }
-```javascript
+```
 
 # Reference Documentation
 

@@ -266,6 +266,22 @@ function test_wrapper()
   assert(o.arguments[2] === '--b');
 }
 
+function test_hidden()
+{
+  var o = new OptionParser();
+  o.errorHandler = errorHandler_ignore;
+  o.addInt('super-secret-option', 'a int').setHidden();
+
+  var res1 = o.parse(['node', 'test', '--super-secret-option=42']);
+  assert(res1.superSecretOption === 42);
+
+  var u = o.getUsage();
+  assert(u.indexOf('super-secret-option') === -1);
+
+  var uh = o.getUsage({showHidden:true});
+  assert(uh.indexOf('super-secret-option') > 0);
+}
+
 var tests = [
   { name: 'test flags', f: test_flag },
   { name: 'test ints', f: test_int },
@@ -277,6 +293,7 @@ var tests = [
   { name: 'test single character flags', f: test_single_character_flags },
   { name: 'test single character string/int options', f: test_single_character_string_int_options },
   { name: 'test wrapper', f: test_wrapper },
+  { name: 'test hidden', f: test_hidden },
 ];
 
 tests.forEach(function(test) {
