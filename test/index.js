@@ -185,6 +185,87 @@ function test_modes()
   assert(res5.modeValues.height === 24);
 }
 
+function test_single_character_flags()
+{
+  var o = new OptionParser();
+  o.errorHandler = errorHandler_ignore;
+  o.addFlag('flag-a', 'a flag');
+  o.addFlag('flag-b', 'b flag');
+  o.addShortAlias('g', 'flag-a');
+  o.addShortAlias('h', 'flag-b');
+
+  var res1 = o.parse(['node', 'test', '--flag-a']);
+  assert(res1.flagA);
+  assert(!res1.flagB);
+
+  var res2 = o.parse(['node', 'test', '--flag-b']);
+  assert(!res2.flagA);
+  assert(res2.flagB);
+  
+  var res3 = o.parse(['node', 'test', '-g']);
+  assert(res3.flagA);
+  assert(!res3.flagB);
+
+  var res4 = o.parse(['node', 'test', '-h']);
+  assert(!res4.flagA);
+  assert(res4.flagB);
+
+  var res5 = o.parse(['node', 'test', '-gh']);
+  assert(res5.flagA);
+  assert(res5.flagB);
+  
+  var res6 = o.parse(['node', 'test', '-hg']);
+  assert(res6.flagA);
+  assert(res6.flagB);
+}
+
+function test_single_character_string_int_options()
+{
+  var o = new OptionParser();
+  o.errorHandler = errorHandler_ignore;
+  o.addInt('a', 'a flag');
+  o.addString('b', 'b flag');
+  o.addShortAlias('g', 'a');
+  o.addShortAlias('h', 'b');
+
+  var res1 = o.parse(['node', 'test', '-gh', '42', '43']);
+  assert(typeof(res1.a) === 'number');
+  assert(typeof(res1.b) === 'string');
+  assert(res1.a === 42);
+  assert(res1.b === '43');
+
+  var res2 = o.parse(['node', 'test', '-hg', '42', '43']);
+  assert(typeof(res2.a) === 'number');
+  assert(typeof(res2.b) === 'string');
+  assert(res2.a === 43);
+  assert(res2.b === '42');
+}
+
+function test_wrapper()
+{
+  var o = new OptionParser();
+  o.errorHandler = errorHandler_ignore;
+  o.addInt('a', 'a int');
+  o.addFlag('b', 'b');
+  var res1 = o.parse(['node', 'test', 'subprogram', '--c']);
+  assert(res1 === null);
+
+  var res2 = o.parse(['node', 'test', 'subprogram', '--b']);
+  assert(res2 !== null);
+  assert(res2.b);
+  assert(o.arguments.length === 1);
+  assert(o.arguments[0] === 'subprogram');
+
+  o.setWrapper();
+
+  var res3 = o.parse(['node', 'test', 'subprogram', '--c', '--b']);
+  assert(!res3.b);
+  assert(o.arguments.length === 3);
+  assert(o.arguments[0] === 'subprogram');
+  assert(o.arguments[1] === '--c');
+  assert(o.arguments[2] === '--b');
+}
+
 var tests = [
   { name: 'test flags', f: test_flag },
   { name: 'test ints', f: test_int },
@@ -193,6 +274,9 @@ var tests = [
   { name: 'test type registration', f: test_type_registration },
   { name: 'test repeated ints', f: test_int_repeated },
   { name: 'test modes', f: test_modes },
+  { name: 'test single character flags', f: test_single_character_flags },
+  { name: 'test single character string/int options', f: test_single_character_string_int_options },
+  { name: 'test wrapper', f: test_wrapper },
 ];
 
 tests.forEach(function(test) {

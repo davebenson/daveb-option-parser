@@ -133,8 +133,11 @@ Returns a new `TypeInfo`.
 ### `addGeneric`(_name_, _type_, _description_)
 Add a new parameter to the option-parser.
 
-### `addShortAlias`(_shortname_, _longname_) [TODO]
+### `addShortAlias`(_shortname_, _longname_)
 Alias a one-character name for a long name.
+
+If the original long name takes arguments, they must be given consecutively
+after the short-option blob in the same order as in the short options.
 
 ### `addPreset`(_name_, _description_, _optionDictionary_) [TODO]
 When this long-option is encountered, all the various attributes
@@ -147,6 +150,11 @@ Once a mode is given, it becomes required to specify a mode.
 
 The user's chosen mode information will be returned in `this.modeName`
 and `this.modeValues`.
+
+### `setWrapper`(_isW_)
+If `true` then this program will assume it is a wrapper program
+whose arguments after the program name will be directly passed to a subprogram.
+They will be captured in the `arguments` member, along with the executable name.
 
 ### `parse`(_[args]_)
 Parse the command-line arguments.  If not specified, we process the current process's arguments,

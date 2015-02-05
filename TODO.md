@@ -1,7 +1,7 @@
 # TODO
-- [ ] short options - single character abbreviations.  multiple characters may
+- [x] short options - single character abbreviations.  multiple characters may
 be combined, except only one may take an argument.
-- [ ] feature: wrapper program support
+- [x] feature: wrapper program support
 - [ ] --help-all
 - [ ] --help-hidden
 - [ ] bug: verify non-repeated arguments are really not repeated
