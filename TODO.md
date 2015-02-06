@@ -4,7 +4,7 @@ be combined, except only one may take an argument.
 - [x] feature: wrapper program support
 - [x] --help-all
 - [x] --help-hidden
-- [ ] bug: verify non-repeated arguments are really not repeated
+- [x] bug: verify non-repeated arguments are really not repeated
 - [ ] cleanup: move all default handling to end.
 - [ ] mutually exclusive options: ie exactly 1 of these N options must be given;
 or 0 or 1 of these N options must be given.

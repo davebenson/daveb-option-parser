@@ -282,6 +282,26 @@ function test_hidden()
   assert(uh.indexOf('super-secret-option') > 0);
 }
 
+function test_nonrepeated_option_errors()
+{
+  var o = new OptionParser();
+  o.errorHandler = errorHandler_ignore;
+  o.addFlag('fl', 'a flag');
+  var oi_arg = o.addInt('oi', 'an int');
+  var res1 = o.parse(['node', 'test', '--fl', '--fl', '--oi=42']);
+  assert(res1.fl);
+  assert(res1.oi === 42);
+
+  var res2 = o.parse(['node', 'test', '--fl', '--oi=42', '--oi=42']);
+  assert(res2 === null);
+  
+  oi_arg.setTolerateRepeated();
+
+  var res3 = o.parse(['node', 'test', '--fl', '--oi=42', '--oi=43']);
+  assert(res3.fl);
+  assert(res3.oi === 43);  /// last instance wins!
+}
+  
 var tests = [
   { name: 'test flags', f: test_flag },
   { name: 'test ints', f: test_int },
@@ -294,6 +314,7 @@ var tests = [
   { name: 'test single character string/int options', f: test_single_character_string_int_options },
   { name: 'test wrapper', f: test_wrapper },
   { name: 'test hidden', f: test_hidden },
+  { name: 'test non-repeated options, error conditions', f: test_nonrepeated_option_errors },
 ];
 
 tests.forEach(function(test) {
