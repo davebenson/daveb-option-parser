@@ -1,1 +1,11 @@
+0.0.1 adds standard battery of features:
+  - default-values
+  - repeats
+  - exclusives
+  - single-character aliases
+  - "presets"
+  - user-defined types
+  - generic "callback" type
+  - minimum and maximum constraints
+
 0.0.0 initial release

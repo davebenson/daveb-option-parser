@@ -428,6 +428,38 @@ function test_exclusive_mandatory()
   assert(res7.c);
 }
 
+function longestLineLength(str) {
+  var maxLen = 0;
+  str.split('\n').forEach(function (line) {
+    var len = line.length;
+    if (len > maxLen)
+      maxLen = len;
+  });
+  return maxLen;
+}
+
+function test_usage_wordwrap()
+{
+  var o = new OptionParser();
+  o.programName = 'test';
+  o.addFlag('a', 'the quick brown fox jumps over the lazy dog. ' +
+                 'the quick brown fox jumps over the lazy dog. ' +
+                 'the quick brown fox jumps over the lazy dog. ' +
+                 'the quick brown fox jumps over the lazy dog. ' +
+                 'the quick brown fox jumps over the lazy dog. ' +
+                 'the quick brown fox jumps over the lazy dog. ' +
+                 'the quick brown fox jumps over the lazy dog. ');
+
+  function doTestWithWidth(width) {
+    var u = o.getUsage({width:width});
+    var u_lll = longestLineLength(u);
+    assert(width - 5 < u_lll && u_lll <= width);
+  }
+
+  for (var w = 60; w <= 100; w++) {
+    doTestWithWidth(w);
+  }
+}
 
 var tests = [
   { name: 'test flags', f: test_flag },
@@ -447,6 +479,7 @@ var tests = [
   { name: 'test arg callbacks', f: test_arg_callbacks },
   { name: 'test exclusive, optional', f: test_exclusive_optional },
   { name: 'test exclusive, mandatory', f: test_exclusive_mandatory },
+  { name: 'test usage-message word-wrapping', f: test_usage_wordwrap },
 ];
 
 tests.forEach(function(test) {
