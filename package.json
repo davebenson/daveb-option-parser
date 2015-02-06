@@ -1,7 +1,7 @@
 {
   "name": "daveb-option-parser",
   "description": "A not-too-simple command-line option parser",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Dave Benson <daveb@ffem.org>",
   "repository": {
     "type": "git",
