@@ -301,7 +301,134 @@ function test_nonrepeated_option_errors()
   assert(res3.fl);
   assert(res3.oi === 43);  /// last instance wins!
 }
-  
+
+function test_presets()
+{
+  var o = new OptionParser();
+  o.errorHandler = errorHandler_ignore;
+  o.addPreset('a', 'a', {val1: true, val2: false});
+  o.addPreset('b', 'b', {val2: true, val3: false});
+  o.addPreset('c', 'c', {val1: "c", val3: 42});
+
+  var res1 = o.parse(['node', 'test', '--a', '--b']);
+  assert(res1.val1 === true);
+  assert(res1.val2 === true);
+  assert(res1.val3 === false);
+
+  var res2 = o.parse(['node', 'test', '--b', '--c']);
+  assert(res2.val1 === "c");
+  assert(res2.val2 === true);
+  assert(res2.val3 === 42);
+
+  // TODO: more
+}
+
+function test_noarg_callbacks()
+{
+  var o = new OptionParser();
+  o.errorHandler = errorHandler_ignore;
+  o.addInt('a', 'a').setTolerateRepeated();
+  o.addNoArgCallback('incr-a', 'increment a', function (values) { values.a += 1; return true; });
+  o.addNoArgCallback('throw', 'throw an exception', function () { throw new Error('throw function'); });
+
+  var res1 = o.parse(['node', 'test', '--a=42', '--incr-a']);
+  assert(res1.a === 43);
+
+  var res2 = o.parse(['node', 'test', '--a=42', '--incr-a', '--incr-a']);
+  assert(res2.a === 44);
+
+  var res3 = o.parse(['node', 'test', '--throw']);
+  assert(res3 === null);
+}
+
+function test_arg_callbacks()
+{
+  var o = new OptionParser();
+  o.errorHandler = errorHandler_ignore;
+  o.addInt('a', 'a').setTolerateRepeated();
+  o.addArgCallback('incr-a', 'DELTA', 'increment a', function (value, values) { values.a += parseFloat(value); return true; }).setTolerateRepeated();
+
+  var res1 = o.parse(['node', 'test', '--a=42', '--incr-a=1']);
+  assert(res1.a === 43);
+
+  var res2 = o.parse(['node', 'test', '--a=42', '--incr-a=1', '--incr-a=2']);
+  assert(res2.a === 45);
+
+  var res3 = o.parse(['node', 'test', '--a=42', '--incr-a=1', '--incr-a=2', '--a=18']);
+  assert(res3.a === 18);
+}
+
+function test_exclusive_optional()
+{
+  var o = new OptionParser();
+  o.errorHandler = errorHandler_ignore;
+  o.addFlag('a', 'a');
+  o.addFlag('b', 'b');
+  o.addFlag('c', 'c');
+  o.setExclusive(false, ['a', 'b', 'c']);
+  var res1 = o.parse(['node', 'test', '--a']);
+  assert(res1.a);
+  assert(!res1.b);
+  assert(!res1.c);
+
+  var res2 = o.parse(['node', 'test', '--a', '--b']);
+  assert(res2 === null);
+
+  var res3 = o.parse(['node', 'test', '--a', '--c']);
+  assert(res3 === null);
+
+  var res4 = o.parse(['node', 'test', '--b', '--c']);
+  assert(res4 === null);
+
+  var res5 = o.parse(['node', 'test', '--b', '--c', '--a']);
+  assert(res5 === null);
+
+  var res6 = o.parse(['node', 'test']);
+  assert(!res6.a);
+  assert(!res6.b);
+  assert(!res6.c);
+
+  var res7 = o.parse(['node', 'test', '--c']);
+  assert(!res7.a);
+  assert(!res7.b);
+  assert(res7.c);
+}
+
+function test_exclusive_mandatory()
+{
+  var o = new OptionParser();
+  o.errorHandler = errorHandler_ignore;
+  o.addFlag('a', 'a');
+  o.addFlag('b', 'b');
+  o.addFlag('c', 'c');
+  o.setExclusive(true, ['a', 'b', 'c']);
+  var res1 = o.parse(['node', 'test', '--a']);
+  assert(res1.a);
+  assert(!res1.b);
+  assert(!res1.c);
+
+  var res2 = o.parse(['node', 'test', '--a', '--b']);
+  assert(res2 === null);
+
+  var res3 = o.parse(['node', 'test', '--a', '--c']);
+  assert(res3 === null);
+
+  var res4 = o.parse(['node', 'test', '--b', '--c']);
+  assert(res4 === null);
+
+  var res5 = o.parse(['node', 'test', '--b', '--c', '--a']);
+  assert(res5 === null);
+
+  var res6 = o.parse(['node', 'test']);
+  assert(res6 === null);
+
+  var res7 = o.parse(['node', 'test', '--c']);
+  assert(!res7.a);
+  assert(!res7.b);
+  assert(res7.c);
+}
+
+
 var tests = [
   { name: 'test flags', f: test_flag },
   { name: 'test ints', f: test_int },
@@ -315,6 +442,11 @@ var tests = [
   { name: 'test wrapper', f: test_wrapper },
   { name: 'test hidden', f: test_hidden },
   { name: 'test non-repeated options, error conditions', f: test_nonrepeated_option_errors },
+  { name: 'test presets', f: test_presets },
+  { name: 'test no-arg callbacks', f: test_noarg_callbacks },
+  { name: 'test arg callbacks', f: test_arg_callbacks },
+  { name: 'test exclusive, optional', f: test_exclusive_optional },
+  { name: 'test exclusive, mandatory', f: test_exclusive_mandatory },
 ];
 
 tests.forEach(function(test) {

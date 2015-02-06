@@ -134,13 +134,24 @@ Returns a new `TypeInfo`.
 ### `addGeneric`(_name_, _type_, _description_)
 Add a new parameter to the option-parser.
 
+### `addArgCallback`(_name_, _label_, _description_, _fct_)
+fct() takes arguments (argument, values, argInfo, typeInfo, optionParser).
+It should throw an error to report problems.
+Whatever is returned by the function will be set in the values object.
+
+### `addNoArgCallback`(_name_, _description_, _fct_)
+fct() takes arguments (values, argInfo, typeInfo, optionParser).
+It should throw an error to report problems.
+
 ### `addShortAlias`(_shortname_, _longname_)
 Alias a one-character name for a long name.
 
 If the original long name takes arguments, they must be given consecutively
 after the short-option blob in the same order as in the short options.
 
-### `addPreset`(_name_, _description_, _optionDictionary_) [TODO]
+### `setExclusive`(_required_, _arrayOfOptionNames_)
+
+### `addPreset`(_name_, _description_, _optionDictionary_)
 When this long-option is encountered, all the various attributes
 in optionDictionary will be copied into the returned values dictionary.
 
@@ -156,6 +167,7 @@ and `this.modeValues`.
 If `true` then this program will assume it is a wrapper program
 whose arguments after the program name will be directly passed to a subprogram.
 They will be captured in the `arguments` member, along with the executable name.
+
 
 ### `parse`(_[args]_)
 Parse the command-line arguments.  If not specified, we process the current process's arguments,
@@ -190,11 +202,16 @@ Populate the returned option values with this value if not given.
 Require this option to be given.  If 'm' is given, it should be a boolean: whether this is mandatory.
 If not given, it defaults to true (the argument is mandatory).
 
-### `setRepeatable`(r)
+### `setRepeated`(r)
 Allow this option to be specified multiple times.  The entry in the returned 'values' object
 for this option will be an array of the types.  Similarly, setDefaultValue() will typically be
 given an array (the default default value in this case is the empty array, []).
 If this option is tagged 'mandatory', then at least one instance must be given.
+
+### `setTolerateRepeated`(r)
+The default for argument-less options, normally repeating non-repeated arguments causes an
+error.  If "tolerateRepeated", then instead of an error, just the last
+value for that argument is reported.
 
 ### `setLabel`(_labelText)
 

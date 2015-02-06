@@ -6,8 +6,10 @@ be combined, except only one may take an argument.
 - [x] --help-hidden
 - [x] bug: verify non-repeated arguments are really not repeated
 - [x] cleanup: move all default handling to end.
-- [ ] mutually exclusive options: ie exactly 1 of these N options must be given;
+- [x] mutually exclusive options: ie exactly 1 of these N options must be given;
 or 0 or 1 of these N options must be given.
+- [x] presets
+- [x] callback type
 - [ ] tests
   - [ ] permitArguments
   - [ ] word-wrap in usage message
