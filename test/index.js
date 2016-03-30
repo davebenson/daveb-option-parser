@@ -90,20 +90,22 @@ function test_float()
   assert(res5 === null);  // not-a-number
 }
 
+function typeParse_vector(value) {
+  var rv = [];
+  value.split(/,/).forEach(function(eltString) {
+    var n = parseFloat(eltString);
+    if (isNaN(n))
+      throw new Error('error parsing element ' + (rv.length) + ' of vector (element was "' + eltString + '")');
+    rv.push(n);
+  });
+  return rv;
+}
+
 function test_type_registration()
 {
   var o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
-  o.registerType('vector', function (value) {
-    var rv = [];
-    value.split(/,/).forEach(function(eltString) {
-      var n = parseFloat(eltString);
-      if (isNaN(n))
-        throw new Error('error parsing element ' + (rv.length) + ' of vector (element was "' + eltString + '")');
-      rv.push(n);
-    });
-    return rv;
-  });
+  o.registerType('vector', typeParse_vector);
   o.addGeneric('a', 'vector', 'first vector').setMandatory();
   o.addGeneric('b', 'vector', 'second vector').setDefaultValue([1,2]);
   o.addGeneric('c', 'vector', 'third vector');
@@ -461,6 +463,18 @@ function test_usage_wordwrap()
   }
 }
 
+function test_usage_type_registration()
+{
+  var o = new OptionParser();
+  o.programName = 'test';
+  o.errorHandler = errorHandler_ignore;
+  o.registerType('vector', typeParse_vector);
+  o.addGeneric('a', 'vector', 'qqq');
+  var usage = o.getUsage();
+  assert(usage.indexOf('--a=VECTOR') !== -1);
+  assert(usage.indexOf('qqq') !== -1);
+}
+
 var tests = [
   { name: 'test flags', f: test_flag },
   { name: 'test ints', f: test_int },
@@ -480,6 +494,7 @@ var tests = [
   { name: 'test exclusive, optional', f: test_exclusive_optional },
   { name: 'test exclusive, mandatory', f: test_exclusive_mandatory },
   { name: 'test usage-message word-wrapping', f: test_usage_wordwrap },
+  { name: 'test usage-message generic type', f: test_usage_type_registration },
 ];
 
 tests.forEach(function(test) {
