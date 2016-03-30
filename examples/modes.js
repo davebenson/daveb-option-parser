@@ -1,4 +1,5 @@
 var OptionParser = require('../lib/daveb-option-parser').OptionParser;
+var fs = require('fs');
 
 var optionParser = new OptionParser({
   description: 'read/write a string to a file'

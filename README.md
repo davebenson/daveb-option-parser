@@ -168,6 +168,8 @@ If `true` then this program will assume it is a wrapper program
 whose arguments after the program name will be directly passed to a subprogram.
 They will be captured in the `arguments` member, along with the executable name.
 
+Calling this function with no arguments is equivalent to calling it with true.
+
 
 ### `parse`(_[args]_)
 Parse the command-line arguments.  If not specified, we process the current process's arguments,
