@@ -221,6 +221,38 @@ function test_single_character_flags()
   assert(res6.flagB);
 }
 
+function test_single_character_flags2()
+{
+  var o = new OptionParser();
+  o.errorHandler = errorHandler_ignore;
+  o.addFlag('flag-a', 'a flag').addShortCode('g');
+  o.addFlag('flag-b', 'b flag').addShortCode('h');
+
+  var res1 = o.parse(['node', 'test', '--flag-a']);
+  assert(res1.flagA);
+  assert(!res1.flagB);
+
+  var res2 = o.parse(['node', 'test', '--flag-b']);
+  assert(!res2.flagA);
+  assert(res2.flagB);
+  
+  var res3 = o.parse(['node', 'test', '-g']);
+  assert(res3.flagA);
+  assert(!res3.flagB);
+
+  var res4 = o.parse(['node', 'test', '-h']);
+  assert(!res4.flagA);
+  assert(res4.flagB);
+
+  var res5 = o.parse(['node', 'test', '-gh']);
+  assert(res5.flagA);
+  assert(res5.flagB);
+  
+  var res6 = o.parse(['node', 'test', '-hg']);
+  assert(res6.flagA);
+  assert(res6.flagB);
+}
+
 function test_single_character_string_int_options()
 {
   var o = new OptionParser();
@@ -484,6 +516,7 @@ var tests = [
   { name: 'test repeated ints', f: test_int_repeated },
   { name: 'test modes', f: test_modes },
   { name: 'test single character flags', f: test_single_character_flags },
+  { name: 'test single character flags (arginfo)', f: test_single_character_flags2 },
   { name: 'test single character string/int options', f: test_single_character_string_int_options },
   { name: 'test wrapper', f: test_wrapper },
   { name: 'test hidden', f: test_hidden },

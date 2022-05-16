@@ -230,6 +230,9 @@ Value must be strictly less than maximumValue.
 Value must be within halfopen interval: this is equivalent
 to setMinimum(minimumValue).setStrictMaximum(strictMaximumValue).
 
+### `addShortCode`(_code_)
+One character alias for this argument.
+
 ### `setHidden`(_isHidden_)
 A hidden option is not documented in the usage message.
 It is intended (1) to support deprecated options, (2) to provide a way
