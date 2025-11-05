@@ -1,3 +1,10 @@
+1.0.0 upgrade to latest javascript conventions
+  - ecma modules
+  - let/const instead of var
+  - arrow notation instead of 'function'.
+  - new TypeInfo are created by extending TypeInfo
+    rather than registering a callback.
+
 0.0.1 adds standard battery of features:
   - default-values
   - repeats
