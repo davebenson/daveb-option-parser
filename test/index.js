@@ -2,12 +2,12 @@
 import {TypeInfo, OptionParser} from '../lib/daveb-option-parser.js';
 import assert from 'node:assert';
 import util from 'node:util';
+import test from 'node:test';
 
 const errorHandler_ignore = s => {};
 const errorHandler_print = s => console.log('ERROR: ' + s);
 
-function test_flag()
-{
+test('test flag arguments', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addFlag('flag', 'this is a flag');
@@ -28,10 +28,9 @@ function test_flag()
   const res6 = o.parse(['node', 'test', '--flag=false']);
   assert(res6);
   assert(!res6.flag);
-}
+});
 
-function test_int()
-{
+test('test int arguments', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addInt('num1', 'number 1').setMandatory();
@@ -47,10 +46,9 @@ function test_int()
   assert(res3.num1 === 1);
   assert(res3.num2 === -666);
   assert(res3.num3 === 111);
-}
+});
 
-function test_string()
-{
+test('test string arguments', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addString('animal', 'something that walks').setMandatory();
@@ -66,10 +64,9 @@ function test_string()
   assert(res3.animal === 'cat');
   assert(res3.vegetable === 'cucumber');
   assert(res3.mineral === 'iron');
-}
+});
 
-function test_float()
-{
+test('test float arguments', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addFloat('num1', 'number 1').setMandatory();
@@ -89,7 +86,7 @@ function test_float()
   assert(res4 === null);  // NaN not allowed
   const res5 = o.parse(['node', 'test', '--num1=dog']);
   assert(res5 === null);  // not-a-number
-}
+});
 
 function doParseFloat(s) {
   const rv = parseFloat(s);
@@ -107,8 +104,7 @@ class TypeInfoVector extends TypeInfo {
   }
 }
 
-function test_type_registration()
-{
+test('type registration', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.registerType(new TypeInfoVector());
@@ -125,10 +121,9 @@ function test_type_registration()
   assert(res1.b[0] === 1);
   assert(res1.b[1] === 2);
   assert(res1.c === undefined);
-}
+});
  
-function test_int_repeated()
-{
+test('int repeated', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addGeneric('a', 'int', 'first vector').setMandatory().setRepeated();
@@ -157,10 +152,9 @@ function test_int_repeated()
   assert(res3.c[1] === 9);
   assert(res3.c[2] === 11);
   assert(res3.c[3] === 13);
-}
+});
 
-function test_modes()
-{
+test('modes', (t) => {
   const o_rectangle = new OptionParser();
   o_rectangle.errorHandler = errorHandler_ignore;
   o_rectangle.addFloat('width', 'width of rectangle').setMandatory();
@@ -191,10 +185,9 @@ function test_modes()
   assert(res5.mode === 'rectangle');
   assert(res5.modeValues.width === 42);
   assert(res5.modeValues.height === 24);
-}
+});
 
-function test_single_character_flags()
-{
+test('single character flags', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addFlag('flag-a', 'a flag');
@@ -225,10 +218,9 @@ function test_single_character_flags()
   const res6 = o.parse(['node', 'test', '-hg']);
   assert(res6.flagA);
   assert(res6.flagB);
-}
+});
 
-function test_single_character_flags2()
-{
+test('single character flags, part 2', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addFlag('flag-a', 'a flag').addShortCode('g');
@@ -257,10 +249,9 @@ function test_single_character_flags2()
   const res6 = o.parse(['node', 'test', '-hg']);
   assert(res6.flagA);
   assert(res6.flagB);
-}
+});
 
-function test_single_character_string_int_options()
-{
+test('single character string and int options', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addInt('a', 'a flag');
@@ -279,10 +270,9 @@ function test_single_character_string_int_options()
   assert(typeof(res2.b) === 'string');
   assert(res2.a === 43);
   assert(res2.b === '42');
-}
+});
 
-function test_wrapper()
-{
+test('wrapper', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addInt('a', 'a int');
@@ -304,10 +294,9 @@ function test_wrapper()
   assert(o.arguments[0] === 'subprogram');
   assert(o.arguments[1] === '--c');
   assert(o.arguments[2] === '--b');
-}
+});
 
-function test_hidden()
-{
+test('hidden', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addInt('super-secret-option', 'a int').setHidden();
@@ -320,10 +309,9 @@ function test_hidden()
 
   const uh = o.getUsage({showHidden:true});
   assert(uh.indexOf('super-secret-option') > 0);
-}
+});
 
-function test_nonrepeated_option_errors()
-{
+test('nonrepeated option errors', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addFlag('fl', 'a flag');
@@ -340,10 +328,9 @@ function test_nonrepeated_option_errors()
   const res3 = o.parse(['node', 'test', '--fl', '--oi=42', '--oi=43']);
   assert(res3.fl);
   assert(res3.oi === 43);  /// last instance wins!
-}
+});
 
-function test_presets()
-{
+test('presets', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addPreset('a', 'a', {val1: true, val2: false});
@@ -361,10 +348,9 @@ function test_presets()
   assert(res2.val3 === 42);
 
   // TODO: more
-}
+});
 
-function test_noarg_callbacks()
-{
+test('noarg-callbacks', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addInt('a', 'a').setTolerateRepeated();
@@ -379,10 +365,9 @@ function test_noarg_callbacks()
 
   const res3 = o.parse(['node', 'test', '--throw']);
   assert(res3 === null);
-}
+});
 
-function test_arg_callbacks()
-{
+test('arg-callbacks', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addInt('a', 'a').setTolerateRepeated();
@@ -396,10 +381,9 @@ function test_arg_callbacks()
 
   const res3 = o.parse(['node', 'test', '--a=42', '--incr-a=1', '--incr-a=2', '--a=18']);
   assert(res3.a === 18);
-}
+});
 
-function test_exclusive_optional()
-{
+test('exclusive-optional', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addFlag('a', 'a');
@@ -432,10 +416,9 @@ function test_exclusive_optional()
   assert(!res7.a);
   assert(!res7.b);
   assert(res7.c);
-}
+});
 
-function test_exclusive_mandatory()
-{
+test('exclusive mandatory', (t) => {
   const o = new OptionParser();
   o.errorHandler = errorHandler_ignore;
   o.addFlag('a', 'a');
@@ -466,7 +449,7 @@ function test_exclusive_mandatory()
   assert(!res7.a);
   assert(!res7.b);
   assert(res7.c);
-}
+});
 
 function longestLineLength(str) {
   let maxLen = 0;
@@ -478,8 +461,7 @@ function longestLineLength(str) {
   return maxLen;
 }
 
-function test_usage_wordwrap()
-{
+test('usage wordwrap', (t) => {
   const o = new OptionParser();
   o.programName = 'test';
   o.addFlag('a', 'the quick brown fox jumps over the lazy dog. ' +
@@ -499,10 +481,9 @@ function test_usage_wordwrap()
   for (let w = 60; w <= 100; w++) {
     doTestWithWidth(w);
   }
-}
+});
 
-function test_usage_type_registration()
-{
+test('usage type registration', (t) => {
   const o = new OptionParser();
   o.programName = 'test';
   o.errorHandler = errorHandler_ignore;
@@ -511,33 +492,4 @@ function test_usage_type_registration()
   const usage = o.getUsage();
   assert(usage.indexOf('--a=VECTOR') !== -1);
   assert(usage.indexOf('qqq') !== -1);
-}
-
-const tests = [
-  { name: 'test flags', f: test_flag },
-  { name: 'test ints', f: test_int },
-  { name: 'test strings', f: test_string },
-  { name: 'test floats', f: test_float },
-  { name: 'test type registration', f: test_type_registration },
-  { name: 'test repeated ints', f: test_int_repeated },
-  { name: 'test modes', f: test_modes },
-  { name: 'test single character flags', f: test_single_character_flags },
-  { name: 'test single character flags (arginfo)', f: test_single_character_flags2 },
-  { name: 'test single character string/int options', f: test_single_character_string_int_options },
-  { name: 'test wrapper', f: test_wrapper },
-  { name: 'test hidden', f: test_hidden },
-  { name: 'test non-repeated options, error conditions', f: test_nonrepeated_option_errors },
-  { name: 'test presets', f: test_presets },
-  { name: 'test no-arg callbacks', f: test_noarg_callbacks },
-  { name: 'test arg callbacks', f: test_arg_callbacks },
-  { name: 'test exclusive, optional', f: test_exclusive_optional },
-  { name: 'test exclusive, mandatory', f: test_exclusive_mandatory },
-  { name: 'test usage-message word-wrapping', f: test_usage_wordwrap },
-  { name: 'test usage-message generic type', f: test_usage_type_registration },
-];
-
-tests.forEach(function(test) {
-  console.log('Running ' + test.name);
-  const f = test.f;
-  f();
 });
