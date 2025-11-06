@@ -1,19 +1,19 @@
-var OptionParser = require('../lib/daveb-option-parser').OptionParser;
-var fs = require('fs');
+import {OptionParser} from '../lib/daveb-option-parser.js';
+import fs from 'node:fs';
 
-var optionParser = new OptionParser({
+const optionParser = new OptionParser({
   description: 'read/write a string to a file'
 });
 optionParser.addString('file', 'file to read/write');
 
-var op_write = new OptionParser({ shortDescription: 'write the file' });
+const op_write = new OptionParser({ shortDescription: 'write the file' });
 op_write.addString('contents', 'file contents');
 optionParser.addMode('write', op_write);
 
-var op_read = new OptionParser({ shortDescription: 'read the file' });
+const op_read = new OptionParser({ shortDescription: 'read the file' });
 optionParser.addMode('read', op_read);
 
-var options = optionParser.parse();
+const options = optionParser.parse();
 switch (options.mode) {
   case 'read': {
     fs.readFile(options.file, {encoding:'utf8'}, function(err, str) {
