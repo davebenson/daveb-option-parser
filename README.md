@@ -13,68 +13,69 @@ and force the work to be ad hoc throughout the code.
 # Example
 
 ```javascript
-var OptionParser = require('daveb-option-parser').OptionParser;
+import {OptionParser} from 'daveb-option-parser';
 
 // configure options for a very simple counting program.
-var optionParser = new OptionParser({
+const optionParser = new OptionParser({
   description: 'Print a finite number of evenly spaced numbers.'
 });
 optionParser.addInt('count', 'number of lines to print').setMandatory();
 optionParser.addFloat('step', 'difference between numbers').setDefaultValue(1);
 optionParser.addString('prefix', 'print this before each line').setDefaultValue('');
-var options = optionParser.parse();                 // terminates if there are problems
+const options = optionParser.parse();                 // terminates if there are problems
 
 // main program
-for (var i = 0; i < options.count; i++)
+for (let i = 0; i < options.count; i++)
   console.log(options.prefix + (options.step * i));
 ```
 
 # Example: Creating a new type.
 
 ```javascript
-var OptionParser = require('daveb-option-parser').OptionParser;
+import {OptionParser, TypeInfo} from 'daveb-option-parser';
 
-var optionParser = new OptionParser({
+const optionParser = new OptionParser({
   description: 'Add two 3-d vectors'
 });
-optionParser.registerType('vector3', function (value) {
-  var pieces = value.split(',');
-  if (pieces.length !== 3)
-    throw new Error('expected x,y,z');
-  return pieces.map(function(v) {
-    var r = parseFloat(v);
-    if (isNaN(r))
-      throw new Error('not a number');
-    return r;
-  });
+class TypeInfoVector3 extends TypeInfo {
+  constructor() {
+    super('vector3');
+  }
+  parse(value) {
+    const pieces = value.split(',');
+    if (pieces.length !== 3)
+      throw new Error('expected x,y,z');
+    return pieces.map(parseFloat);
+  }
 });
+optionParser.registerType(new TypeInfoVector3());
 optionParser.addGeneric('a', 'vector3', 'addend 1').setMandatory();
 optionParser.addGeneric('b', 'vector3', 'addend 2').setMandatory();
-var options = optionParser.parse();                 // terminates if there are problems
+const options = optionParser.parse();  // terminates if there are problems
 
 // main program
-var a = options.a, b = options.b;
-var sum = [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+const a = options.a, b = options.b;
+const sum = [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 console.log(sum.join(','));
 ```
 
 # Example: Command with Different Modes
 ```javascript
-var OptionParser = require('daveb-option-parser').OptionParser;
+import {OptionParser} from 'daveb-option-parser';
 
-var optionParser = new OptionParser({
+const optionParser = new OptionParser({
   description: 'read/write a string to a file'
 });
 optionParser.addString('file', 'file to read/write');
 
-var op_write = new OptionParser({ shortDescription: 'write the file' });
+const op_write = new OptionParser({ shortDescription: 'write the file' });
 op_write.addString('contents', 'file contents');
 optionParser.addMode('write', op_write);
 
-var op_read = new OptionParser({ shortDescription: 'read the file' });
+const op_read = new OptionParser({ shortDescription: 'read the file' });
 optionParser.addMode('read', op_read);
 
-var options = optionParser.parse();
+const options = optionParser.parse();
 switch (options.mode) {
   case 'read': {
     fs.readFile(options.file, {encoding:'utf8'}, function(err, str) {
@@ -124,12 +125,8 @@ Add a string parameter to the option-parser.
 
 Returns a new `ArgInfo`.
 
-### `registerType`(_type_, _parseFunction_)
+### `registerType`(_typeInfo_)
 Add a new type to the option-parser.
-
-Register a new type.
-
-Returns a new `TypeInfo`.
 
 ### `addGeneric`(_name_, _type_, _description_)
 Add a new parameter to the option-parser.
@@ -150,6 +147,10 @@ If the original long name takes arguments, they must be given consecutively
 after the short-option blob in the same order as in the short options.
 
 ### `setExclusive`(_required_, _arrayOfOptionNames_)
+
+Prevent more than one of a set of options to be used.
+
+If required, exactly one must be set.
 
 ### `addPreset`(_name_, _description_, _optionDictionary_)
 When this long-option is encountered, all the various attributes
@@ -245,7 +246,13 @@ to do something sneaky!
 ## `TypeInfo` class
 An instance of the TypeInfo class is created when a new type is created via registerType.
 
-### `setDefaultLabel`(_labelText_)
+You may extend this class to create a new type that can be parsed.
+
+### `parse(arg, values, argInfo, optionParser)`
+Usually, you only need the first argument. See example above with vector3.
+
+### `requiresArg()`
+Returns whether this type needs an argument. Default: true.
 
 # Details of the Usage Message Generation
 
