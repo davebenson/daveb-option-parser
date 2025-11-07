@@ -29,6 +29,21 @@ for (let i = 0; i < options.count; i++)
   console.log(options.prefix + (options.step * i));
 ```
 
+# Example: constraints
+```
+const optionParser = new OptionParser({
+  description: 'Flip a weighted coin'
+});
+optionParser.addFloat('prob', 'probability of heads')
+                .setDefaultValue(0.5)
+                .setMinimum(0.0)
+                .setMaximum(1.0);
+                .addShortCode('p');
+const options = optionParser.parse();
+console.log(Math.random() < options.prob ? 'HEAD' : 'TAILS');
+```
+
+
 # Example: Creating a new type.
 
 ```javascript

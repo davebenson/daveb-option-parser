@@ -1,24 +1,30 @@
+export type ValueTable = {[key:string]: any};
+
 export class TypeInfo {
     constructor(name: string);
     name: string;
-    _defaultLabel: string;
-    parse(value: string, values: any, argInfo: ArgInfo): any;
+    defaultLabel: string;
+    parse(value: string, values: ValueTable, argInfo: ArgInfo): any;
     requiresArg(): boolean;
 }
+
+// Should throw exception if not satisfied.
+export type ConstraintFunc = (value: any, argInfo: ArgInfo, typeInfo: TypeInfo) => undefined;
+
 export class ArgInfo {
     constructor(name: string, type: TypeInfo, description: string, optionParser: any);
     name: string;
     type: TypeInfo;
     description: string;
-    _mandatory: boolean;
-    _repeated: boolean;
-    _tolerateRepeated: boolean;
-    _hidden: boolean;
-    _defaultValue: any;
-    _label: string;
-    _constraints: any[];
-    _shortCodes: string[];
-    _exclusiveIndices: any[];
+    mandatory: boolean;
+    repeated: boolean;
+    tolerateRepeated: boolean;
+    hidden: boolean;
+    defaultValue: any;
+    label: string;
+    _constraints: ConstraintFunc[];
+    _shortCodes: string[];      // characters
+    _exclusiveIndices: number[];
     _requiresArg: any;
     _optionParser: OptionParser;
     setMandatory(isM: boolean): this;
@@ -27,8 +33,7 @@ export class ArgInfo {
     setTolerateRepeated(isR: boolean): this;
     setDefaultValue(v: boolean): this;
     setLabel(label: string): this;
-    _argPrototypeLabel: string;
-    addConstraint(testFunc: any): this;
+    addConstraint(testFunc: ConstraintFunc): this;
     setMinimum(minimumValue: number): this;
     setStrictMinimum(minimumValue: number): this;
     setMaximum(maximumValue: number): this;
@@ -51,18 +56,29 @@ export interface OptionParserInitOptions {
   optionNameToJavascriptName: Function<string, string>;
 }
 
+export interface ModeInfo {
+  name: string;
+  parser: OptionParser;
+}
+
+export interface ExclusiveInfo {
+  required: boolean;
+  optionNames: string;
+  argInfos: ArgInfo[];
+}
+
 export class OptionParser {
-    constructor(options?: {});
+    constructor(opts: OptionParserInitOptions)
     jnameToArgInfo: {[key: string]: ArgInfo};
-    order: any[];
-    types: {};
-    modes: {};
+    order: string[];
+    types: {[key: string]: TypeInfo};
+    modes: {[key: string]: ModeInfo};
     modeOrder: string[];
     shortDescription: string;
     description: string;
-    shortCodes: {};
+    shortCodes: {[key: string]: string};
     isWrapper: boolean;
-    exclusives: any[];
+    exclusives: ExclusiveInfo[];
     camelCase: boolean;
     permitArguments: boolean;
     optionNameToJavascriptName: Function<string, string>;
@@ -79,9 +95,9 @@ export class OptionParser {
     setWrapper(isW: boolean): this;
     getUsage(options?: {}): string;
     errorHandler: (errorMessage: string, argInfo: ArgInfo) => void;
-    parse(args?: any): {};
+    parse(args?: string[]): {};
     arguments: any[];
-    values: {};
+    values: ValueTable;
     addShortAlias(code: string, alias: string): this;
     setExclusive(required: boolean, optionNames: string[]): this;
 }

@@ -7,6 +7,7 @@
     "type": "git",
     "url": "https://github.com/davebenson/daveb-option-parser.git"
   },
+  "type": "module",
   "keywords": [
     "command-line",
     "option parsing"
