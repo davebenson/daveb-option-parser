@@ -272,28 +272,42 @@ test('single character string and int options', (t) => {
   assert(res2.b === '42');
 });
 
-test('wrapper', (t) => {
+test('no permit arguments', (t) => {
   const o = new OptionParser();
-  o.errorHandler = errorHandler_ignore;
+  o.errorHandler = errorHandler_print;
   o.addInt('a', 'a int');
   o.addFlag('b', 'b');
+});
+
+test('permit arguments', (t) => {
+  const o = new OptionParser({permitArguments: true});
+  o.errorHandler = errorHandler_print;
+  o.addInt('a', 'a int');
+  o.addFlag('b', 'b');
+
   const res1 = o.parse(['node', 'test', 'subprogram', '--c']);
   assert(res1 === null);
 
   const res2 = o.parse(['node', 'test', 'subprogram', '--b']);
   assert(res2 !== null);
   assert(res2.b);
-  assert(o.arguments.length === 1);
-  assert(o.arguments[0] === 'subprogram');
+  assert(res2.arguments.length === 1);
+  assert(res2.arguments[0] === 'subprogram');
+});
 
+test('wrapper', (t) => {
+  const o = new OptionParser({permitArguments: true});
+  o.errorHandler = errorHandler_print;
+  o.addInt('a', 'a int');
+  o.addFlag('b', 'b');
   o.setWrapper();
 
   const res3 = o.parse(['node', 'test', 'subprogram', '--c', '--b']);
   assert(!res3.b);
-  assert(o.arguments.length === 3);
-  assert(o.arguments[0] === 'subprogram');
-  assert(o.arguments[1] === '--c');
-  assert(o.arguments[2] === '--b');
+  assert(res3.arguments.length === 3);
+  assert(res3.arguments[0] === 'subprogram');
+  assert(res3.arguments[1] === '--c');
+  assert(res3.arguments[2] === '--b');
 });
 
 test('hidden', (t) => {
@@ -449,6 +463,21 @@ test('exclusive mandatory', (t) => {
   assert(!res7.a);
   assert(!res7.b);
   assert(res7.c);
+});
+
+test('permit arg array of type', (t) => {
+  const o = new OptionParser({permitArguments: 'int'});
+  const args = o.parse(['node', 'test', '1', '2', '3']);
+  assert.deepEqual(args, {arguments: [1,2,3]});
+});
+
+test('permit arg of array of types', (t) => {
+  const o = new OptionParser({permitArguments: ['int','int','int']});
+  const args = o.parse(['node', 'test', '1', '2', '3']);
+  assert.deepEqual(args, {arguments: [1,2,3]});
+
+  assert.throws(() => o.parse(['node', 'test', '1', '2']));
+  assert.throws(() => o.parse(['node', 'test', '1', '2', '3', '4']));
 });
 
 function longestLineLength(str) {

@@ -8,6 +8,10 @@ export class TypeInfo {
     requiresArg(): boolean;
 }
 
+export class TypeInfoEnum extends TypeInfo {
+    constructor(name: string, values: string[]);
+}
+
 // Should throw exception if not satisfied.
 export type ConstraintFunc = (value: any, argInfo: ArgInfo, typeInfo: TypeInfo) => undefined;
 
@@ -22,7 +26,7 @@ export class ArgInfo {
     hidden: boolean;
     defaultValue: any;
     label: string;
-    _constraints: ConstraintFunc[];
+    constraints: ConstraintFunc[];
     _shortCodes: string[];      // characters
     _exclusiveIndices: number[];
     _requiresArg: any;

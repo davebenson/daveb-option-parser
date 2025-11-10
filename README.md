@@ -30,7 +30,7 @@ for (let i = 0; i < options.count; i++)
 ```
 
 # Example: constraints
-```
+```javascript
 const optionParser = new OptionParser({
   description: 'Flip a weighted coin'
 });
@@ -118,8 +118,13 @@ switch (options.mode) {
 ### `new OptionParser`(_[options]_)
 Create a new `OptionParser`.  Options is an object which may contain the following fields:
 * `camelCase`: store values keyed by camelCase rather than lowercase_underscore_separated
-* `allowArguments`: make the option-parser argumentative.  j/k.
-Actually, this makes it so that we collect non-option command-line arguments into the parser's `arguments` member.
+* `permitArguments`: make the option-parser argumentative.  j/k.
+Actually, this makes it so that we collect non-option command-line arguments into the parser's `arguments` member.  It can take one of a number of types:
+   * true: the arguments are taken as strings
+   * false: arguments are not allowed
+   * instance of TypeInfo or a string:
+     any number of arguments of this type are allowed
+   * array of TypeInfo or string: exact type matching is requires
 * `errorHandler`: function to call if something goes wrong.  if unspecified, the 
 program will terminate with an error message.
 * `name`: application name, used in usage summary.
@@ -171,13 +176,18 @@ If required, exactly one must be set.
 When this long-option is encountered, all the various attributes
 in optionDictionary will be copied into the returned values dictionary.
 
-### `addMode`(_name_, _parser_)
+### `addMode`(_name_, _optionParserOpts_, (OptionParser) => undefined)
 Add a new submode for this command.
 
-Once a mode is given, it becomes required to specify a mode.
+This creates a parser, sets its parent, then involves the configuration
+callback to set it up.
 
-The user's chosen mode information will be returned in `this.modeName`
-and `this.modeValues`.
+The optionParserOpts may also contain a modeJavascriptName to
+use instead of the default value (otherwise computed with
+the default camelCaseToJavascriptName function).
+
+### `addModeAlias`(_newName_, _oldName_)
+Create a nickname for an existing mode.
 
 ### `setWrapper`(_isW_)
 If `true` then this program will assume it is a wrapper program
