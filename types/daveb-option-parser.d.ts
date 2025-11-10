@@ -71,6 +71,12 @@ export interface ExclusiveInfo {
   argInfos: ArgInfo[];
 }
 
+interface ModeOptions extends OptionParserInitOptions {
+  modeJavascriptName: string;
+}
+
+type OptionParserUpdater = (op: OptionParser) => undefined;
+
 export class OptionParser {
     constructor(opts: OptionParserInitOptions)
     jnameToArgInfo: {[key: string]: ArgInfo};
@@ -95,7 +101,7 @@ export class OptionParser {
     addNoArgCallback(name: string, description: string, fct: any): ArgInfo;
     addPreset(name: string, description: string, settings: any): ArgInfo;
     registerType(typeInfo: TypeInfo): any;
-    addMode(mode: string, subOptionParser: OptionParser): void;
+    addMode(mode: string, modeOptions: ModeOptions, updater: OptionParserUpdater): void;
     setWrapper(isW: boolean): this;
     getUsage(options?: {}): string;
     errorHandler: (errorMessage: string, argInfo: ArgInfo) => void;
