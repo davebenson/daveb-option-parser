@@ -122,12 +122,8 @@ switch (options.mode) {
 Create a new `OptionParser`.  Options is an object which may contain the following fields:
 * `camelCase`: store values keyed by camelCase rather than lowercase_underscore_separated
 * `permitArguments`: make the option-parser argumentative.  j/k.
-Actually, this makes it so that we collect non-option command-line arguments into the parser's `arguments` member.  It can take one of a number of types:
-   * true: the arguments are taken as strings
-   * false: arguments are not allowed
-   * instance of TypeInfo or a string:
-     any number of arguments of this type are allowed
-   * array of TypeInfo or string: exact type matching is requires
+Actually, this makes it so that we collect non-option command-line arguments into the parser's `arguments` member.  It can take one of a number of types.
+Set permitArgments() below for possible values.
 * `errorHandler`: function to call if something goes wrong.  if unspecified, the 
 program will terminate with an error message.
 * `name`: application name, used in usage summary.
@@ -168,6 +164,19 @@ Alias a one-character name for a long name.
 
 If the original long name takes arguments, they must be given consecutively
 after the short-option blob in the same order as in the short options.
+
+### `permitArguments`(_setting_, _label_)
+Configure how unknown arguments are handled.
+
+The setting can be a number of types:
+   * true: the arguments are taken as strings
+   * false: arguments are not allowed
+   * instance of TypeInfo or a string:
+     any number of arguments of this type are allowed
+   * array of TypeInfo or string: exact type matching is requires
+
+The label is used for constructing the usage message
+and defaults to uppercase strings based on setting.
 
 ### `setExclusive`(_required_, _arrayOfOptionNames_)
 
@@ -244,7 +253,7 @@ The default for argument-less options, normally repeating non-repeated arguments
 error.  If "tolerateRepeated", then instead of an error, just the last
 value for that argument is reported.
 
-### `setLabel`(_labelText)
+### `setLabel`(_labelText_)
 Set placeholder label for this argument that is displayed
 in the usage message. Traditionally this is all uppercase. It
 defaults to the type in uppercase. For example in the usage
