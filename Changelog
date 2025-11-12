@@ -5,6 +5,11 @@
   - new TypeInfo are created by extending TypeInfo
     rather than registering a callback.
 
+  - modes values are stored in fields with the name
+    of the mode translated to javascript,
+    instead of modeValues.
+  - permitArguments() can take a type or an array of types.
+
 0.0.1 adds standard battery of features:
   - default-values
   - repeats

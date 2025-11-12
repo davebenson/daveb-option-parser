@@ -77,18 +77,20 @@ console.log(sum.join(','));
 # Example: Command with Different Modes
 ```javascript
 import {OptionParser} from 'daveb-option-parser';
-
 const optionParser = new OptionParser({
   description: 'read/write a string to a file'
 });
 optionParser.addString('file', 'file to read/write');
 
-const op_write = new OptionParser({ shortDescription: 'write the file' });
-op_write.addString('contents', 'file contents');
-optionParser.addMode('write', op_write);
+optionParser.addMode('write', {
+                       shortDescription: 'write the file'
+                     }, (op) => {
+                       op.addString('contents', 'file contents');
+                     });
 
-const op_read = new OptionParser({ shortDescription: 'read the file' });
-optionParser.addMode('read', op_read);
+optionParser.addMode('read', {
+                       shortDescription: 'read the file'
+                     });
 
 const options = optionParser.parse();
 switch (options.mode) {
@@ -101,8 +103,9 @@ switch (options.mode) {
       }
     });
     break;
+  }
   case 'write': {
-    fs.writeFile(options.file, options.modeValues.contents, {encoding:'utf8'}, function (err) {
+    fs.writeFile(options.file, options.write.contents, {encoding:'utf8'}, function (err) {
       if (err) {
         throw err;
       }
@@ -242,6 +245,10 @@ error.  If "tolerateRepeated", then instead of an error, just the last
 value for that argument is reported.
 
 ### `setLabel`(_labelText)
+Set placeholder label for this argument that is displayed
+in the usage message. Traditionally this is all uppercase. It
+defaults to the type in uppercase. For example in the usage
+message we might see `--count=INT`. `INT` is the label in that case.
 
 ### `setMinimum`(_minimumValue_)
 Value must be greater than or equal to minimumValue.

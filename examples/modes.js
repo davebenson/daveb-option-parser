@@ -6,12 +6,15 @@ const optionParser = new OptionParser({
 });
 optionParser.addString('file', 'file to read/write');
 
-const op_write = new OptionParser({ shortDescription: 'write the file' });
-op_write.addString('contents', 'file contents');
-optionParser.addMode('write', op_write);
+optionParser.addMode('write', {
+                       shortDescription: 'write the file'
+                     }, (op) => {
+                       op.addString('contents', 'file contents');
+                     });
 
-const op_read = new OptionParser({ shortDescription: 'read the file' });
-optionParser.addMode('read', op_read);
+optionParser.addMode('read', {
+                       shortDescription: 'read the file'
+                     });
 
 const options = optionParser.parse();
 switch (options.mode) {
@@ -26,7 +29,7 @@ switch (options.mode) {
     break;
   }
   case 'write': {
-    fs.writeFile(options.file, options.modeValues.contents, {encoding:'utf8'}, function (err) {
+    fs.writeFile(options.file, options.write.contents, {encoding:'utf8'}, function (err) {
       if (err) {
         throw err;
       }
