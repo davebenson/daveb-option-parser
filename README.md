@@ -297,5 +297,76 @@ Returns whether this type needs an argument. Default: true.
 
 # Details of the Usage Message Generation
 
+# Unsupported things
+`tar` style arguments
+
+multi-argument options (you must combine them into a single argument for now)
+
+
+# Glossary
+
+
+Command-Line Arguments:
+  A list of strings given to a command-line program.
+
+  In unix, a shell parses and computes these from a shell script or user input.
+
+  Traditionally, the first string is a program name.
+
+  In node, the first string is 'node' and the second is the script name,
+  and is available as process.argv.
+
+  The Argument List follows the program or script name.
+
+Argument List:
+  Slice of Command-Line Arguments that come after the program or script name.
+
+Long Option:
+  A double-hyphen-prefixed command-line argument with may have a parameter.
+
+Short Option:
+  A single-hyphen-prefixed single-character option, an alias to a long option.
+
+Option:
+  A long option, with possible short option aliases.
+
+Parameter:
+  A string given to an Option as a command-line argument.
+  Most options take a new parameter, but not all.
+
+Type:
+  Restrictions on a Parameter. For example, it must be an integer.
+
+Flag:
+  An option that is a simple boolean that does not require a parameter.
+  If the default is true, then --no-flag can be used to set it false.
+  These options can be repeated, with the last one being the effective value.
+
+Extra Arguments:
+  Command-line arguments that do not begin with '-'
+  and are 
+
+Option Set:
+  A set of Options and a specification for Extra Arguments.
+
+Mode:
+  A non-hyphenated command-line argument whose subarguments
+  are governed by a new Option Set.
+
+
+
+
+
+
+
+
+
+
+
+
+
 # AUTHOR
 Dave Benson
+
+
+

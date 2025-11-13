@@ -460,7 +460,7 @@ test('noarg-callbacks', (t) => {
   const o = new OptionParser();
   o.errorHandler = curErrorHandler;
   o.addInt('a', 'a').setTolerateRepeated();
-  o.addNoArgCallback('incr-a', 'increment a', function (values) { values.a += 1; return true; });
+  o.addNoArgCallback('incr-a', 'increment a', function (values) { values.a += 1; return true; }).setTolerateRepeated();
   o.addNoArgCallback('throw', 'throw an exception', function () { throw new Error('throw function'); }).addShortCode('t');
 
   const res1 = o.parse(['node', 'test', '--a=42', '--incr-a']);

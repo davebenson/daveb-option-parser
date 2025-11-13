@@ -54,10 +54,22 @@ export interface UsageOptions {
   showNonhidden: boolean;
 }
 
+
+// These are all converted into instances of TypeInfo.
+type PermitArgumentsElement = string | TypeInfo.class | TypeInfo;
+
+// Default is false for the constructor,
+// but if permitArguments() is called with no arguments, it is equivalent to true.
+type PermitArgumentsOptions = true | false | PermitArgumentsElement | PermitArgumentsElement[];
+
+type ErrorHandler = (errorMessage: string, argInfo: ArgInfo) => void;
+
 export interface OptionParserInitOptions {
   camelCase: boolean;
-  permitArguments: boolean;
+  permitArguments: PermitArgumentsOptions;
   optionNameToJavascriptName: Function<string, string>;
+  programName: string;
+  errorHandler: ErrorHandler;
 }
 
 export interface ModeInfo {
@@ -73,9 +85,14 @@ export interface ExclusiveInfo {
 
 interface ModeOptions extends OptionParserInitOptions {
   modeJavascriptName: string;
+  permitArguments: PermitArgumentsOptions;
 }
 
 type OptionParserUpdater = (op: OptionParser) => undefined;
+
+// PermitArgumentsOptions gets converted into PermitArguments.
+// TODO: maybe 'true' should be typeInfoString and false should be [].
+type PermitArguments = true | false | TypeInfo | TypeInfo[];
 
 export class OptionParser {
     constructor(opts: OptionParserInitOptions)
@@ -90,7 +107,7 @@ export class OptionParser {
     isWrapper: boolean;
     exclusives: ExclusiveInfo[];
     camelCase: boolean;
-    permitArguments: boolean;
+    permitArguments: PermitArguments;
     optionNameToJavascriptName: Function<string, string>;
     addGeneric(name: string, type: any, description: string): ArgInfo;
     addString(name: string, description: string): ArgInfo;
@@ -104,8 +121,9 @@ export class OptionParser {
     addMode(mode: string, modeOptions: ModeOptions, updater: OptionParserUpdater): void;
     setWrapper(isW: boolean): this;
     getUsage(options?: {}): string;
-    errorHandler: (errorMessage: string, argInfo: ArgInfo) => void;
+    errorHandler: ErrorHandler;
     parse(args?: string[]): {};
+    permitArguments(cfg: PermitArgumentsOptions?);
     arguments: any[];
     values: ValueTable;
     addShortAlias(code: string, alias: string): this;

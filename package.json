@@ -1,7 +1,7 @@
 {
   "name": "daveb-option-parser",
   "description": "A not-too-simple command-line option parser",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "author": "Dave Benson <lahiker42@gmail.com>",
   "repository": {
     "type": "git",
@@ -25,7 +25,8 @@
   "homepage": "https://github.com/davebenson/daveb-option-parser",
   "main": "lib/daveb-option-parser.js",
   "scripts": {
-    "test": "node test/index.js"
+    "test": "node test/index.js && test/run-verify-examples",
+    "test-cov": "node --experimental-test-coverage test/index.js"
   },
   "license": "ISC"
 }

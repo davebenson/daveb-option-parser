@@ -1,4 +1,4 @@
-1.0.0 upgrade to latest javascript conventions
+0.1.0 upgrade to latest javascript conventions
   - ecma modules
   - let/const instead of var
   - arrow notation instead of 'function'.

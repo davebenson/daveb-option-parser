@@ -1,0 +1,8 @@
+#! /bin/sh
+
+test/verify-examples > /dev/null 2>&1 || {
+  echo "verify examples failed. run test/verify-examples to see what went wrong"
+  exit 1
+}
+
+echo "Examples Verified."
