@@ -1,5 +1,7 @@
 export type ValueTable = {[key:string]: any};
 
+type UsagePrefixOfSuffix = string[] | string;
+
 export class TypeInfo {
     constructor(name: string);
     name: string;
@@ -8,8 +10,10 @@ export class TypeInfo {
     requiresArg(): boolean;
 }
 
+type EnumValues = string[] | { [key: string]: string };
 export class TypeInfoEnum extends TypeInfo {
-    constructor(name: string, values: string[]);
+    constructor(name: string, values: EnumValues);
+    valueDescriptions?: { [key: string]: string; }
 }
 
 // Should throw exception if not satisfied.
@@ -70,6 +74,8 @@ export interface OptionParserInitOptions {
   optionNameToJavascriptName: Function<string, string>;
   programName: string;
   errorHandler: ErrorHandler;
+  usagePrefix?: UsagePrefixOfSuffix;
+  usageSuffix?: UsagePrefixOfSuffix;
 }
 
 export interface ModeInfo {

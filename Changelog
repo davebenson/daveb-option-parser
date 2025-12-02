@@ -1,4 +1,4 @@
-0.1.0 upgrade to latest javascript conventions
+2.0.1 upgrade to latest javascript conventions
   - ecma modules
   - let/const instead of var
   - arrow notation instead of 'function'.
@@ -9,6 +9,8 @@
     of the mode translated to javascript,
     instead of modeValues.
   - permitArguments() can take a type or an array of types.
+
+1.0.0 switched name to @davebenson/option-parser
 
 0.0.1 adds standard battery of features:
   - default-values

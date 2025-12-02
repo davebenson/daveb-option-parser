@@ -613,6 +613,26 @@ test('usage wordwrap', (t) => {
   }
 });
 
+test('usage suffix and prefix', (t) => {
+  const o = new OptionParser({
+    usagePrefix: 'this is a prefix',
+    usageSuffix: ['a test string', 'b test string']
+  });
+
+  o.programName = 'test';
+  o.errorHandler = curErrorHandler;
+  o.addInt('a', 'a');
+  const usage = o.getUsage({width: 100});
+  const i1 = usage.indexOf('this is a prefix');
+  const i2 = usage.indexOf('a test string');
+  const i3 = usage.indexOf('b test string');
+  assert(i1 !== -1);
+  assert(i2 !== -1);
+  assert(i3 !== -1);
+  assert(i1 < i2);
+  assert(i2 < i3);
+});
+
 test('usage type registration', (t) => {
   const o = new OptionParser();
   o.programName = 'test';
@@ -829,5 +849,8 @@ test('misc coverage tests', (t) => {
     assert.equal(o.parse(["node", "test", "--", '666']), null);
     assert.throws(() => o.getUsage());
   }
+  assert.throws(() => {
+    new OptionParser({usagePrefix: 42});
+  });
 });
 

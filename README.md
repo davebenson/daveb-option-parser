@@ -1,4 +1,4 @@
-# daveb-option-parser
+# @davebenson/option-parser
 
 An option parser that does useful type checking
 as well as generating a usage message.
@@ -13,7 +13,7 @@ and force the work to be ad hoc throughout the code.
 # Example
 
 ```javascript
-import {OptionParser} from 'daveb-option-parser';
+import {OptionParser} from '@davebenson/option-parser';
 
 // configure options for a very simple counting program.
 const optionParser = new OptionParser({
@@ -22,7 +22,7 @@ const optionParser = new OptionParser({
 optionParser.addInt('count', 'number of lines to print').setMandatory();
 optionParser.addFloat('step', 'difference between numbers').setDefaultValue(1);
 optionParser.addString('prefix', 'print this before each line').setDefaultValue('');
-const options = optionParser.parse();                 // terminates if there are problems
+const options = optionParser.parse();   // terminates if there are problems
 
 // main program
 for (let i = 0; i < options.count; i++)
@@ -82,20 +82,27 @@ const optionParser = new OptionParser({
 });
 optionParser.addString('file', 'file to read/write');
 
-optionParser.addMode('write', {
-                       shortDescription: 'write the file'
-                     }, (op) => {
-                       op.addString('contents', 'file contents');
-                     });
+optionParser.addMode(
+  'write',
+  {
+    shortDescription: 'write the file'
+  },
+  (op) => {
+    op.addString('contents', 'file contents');
+  }
+);
 
-optionParser.addMode('read', {
-                       shortDescription: 'read the file'
-                     });
+optionParser.addMode(
+  'read',
+  {
+    shortDescription: 'read the file'
+  }
+);
 
 const options = optionParser.parse();
 switch (options.mode) {
   case 'read': {
-    fs.readFile(options.file, {encoding:'utf8'}, function(err, str) {
+    fs.readFile(options.file, {encoding:'utf8'}, (err, str) => {
       if (err) {
         throw err;
       } else {
@@ -105,11 +112,10 @@ switch (options.mode) {
     break;
   }
   case 'write': {
-    fs.writeFile(options.file, options.write.contents, {encoding:'utf8'}, function (err) {
-      if (err) {
-        throw err;
-      }
-    });
+    fs.writeFile(options.file,
+                 options.write.contents,
+                 {encoding:'utf8'},
+                 (err) => { if (err) throw err; }
     break;
   }
 }
@@ -124,8 +130,8 @@ Create a new `OptionParser`.  Options is an object which may contain the followi
 * `permitArguments`: make the option-parser argumentative.  j/k.
 Actually, this makes it so that we collect non-option command-line arguments into the parser's `arguments` member.  It can take one of a number of types.
 Set permitArgments() below for possible values.
-* `errorHandler`: function to call if something goes wrong.  if unspecified, the 
-program will terminate with an error message.
+* `errorHandler`: function to call if something goes wrong.
+If unspecified, the program will terminate with an error message.
 * `name`: application name, used in usage summary.
 * `description`: human-readable blurb that will follow the usage summary in the usage message.
 
@@ -318,51 +324,50 @@ Command-Line Arguments:
 
   The Argument List follows the program or script name.
 
-Argument List:
+* Argument List:
+
   Slice of Command-Line Arguments that come after the program or script name.
 
-Long Option:
+* Long Option:
+
   A double-hyphen-prefixed command-line argument with may have a parameter.
 
-Short Option:
+* Short Option:
+
   A single-hyphen-prefixed single-character option, an alias to a long option.
 
-Option:
+* Option:
+
   A long option, with possible short option aliases.
 
-Parameter:
+* Parameter:
+
   A string given to an Option as a command-line argument.
   Most options take a new parameter, but not all.
 
-Type:
+* Type:
+
   Restrictions on a Parameter. For example, it must be an integer.
 
-Flag:
+* Flag:
+
   An option that is a simple boolean that does not require a parameter.
   If the default is true, then --no-flag can be used to set it false.
   These options can be repeated, with the last one being the effective value.
 
-Extra Arguments:
+* Extra Arguments:
+
   Command-line arguments that do not begin with '-'
   and are 
 
-Option Set:
+* Option Set:
+
   A set of Options and a specification for Extra Arguments.
 
-Mode:
+* Mode:
+
   A non-hyphenated command-line argument whose subarguments
   are governed by a new Option Set.
-
-
-
-
-
-
-
-
-
-
-
 
 
 # AUTHOR
